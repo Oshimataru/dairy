@@ -1,0 +1,93 @@
+from fpdf import FPDF
+
+# Initialize PDF object
+pdf = FPDF()
+pdf.set_auto_page_break(auto=True, margin=15)
+
+# Add a page
+pdf.add_page()
+
+# Set title font
+pdf.set_font("Arial", size=14, style='B')
+pdf.cell(200, 10, txt="Table Specification [Data Dictionary]", ln=True, align='C')
+
+# Define table data with constraints and descriptions
+tables = {
+    "User ": {
+        "columns": [
+            ["ID", "INT", "Primary Key, Auto Increment"],
+            ["Username", "VARCHAR(100)", "Unique, Not Null"],
+            ["Password", "VARCHAR(255)", "Not Null"],
+            ["Email", "VARCHAR(255)", "Unique, Not Null"],
+        ],
+        "description": "Stores user account details."
+    },
+    "Diary": {
+        "columns": [
+            ["ID", "INT", "Primary Key, Auto Increment"],
+            ["User _ID", "INT", "Foreign Key references User(ID)"],
+            ["Entry_Title", "VARCHAR(255)", "Not Null"],
+            ["Entry_Content", "TEXT", "Not Null"],
+            ["Date", "DATE", "Not Null"],
+        ],
+        "description": "Stores diary entries for each user."
+    },
+    "Event": {
+        "columns": [
+            ["ID", "INT", "Primary Key, Auto Increment"],
+            ["User _ID", "INT", "Foreign Key references User(ID)"],
+            ["Event_Name", "VARCHAR(255)", "Not Null"],
+            ["Event_Date", "DATE", "Not Null"],
+        ],
+        "description": "Stores user-created events."
+    },
+    "ToDo": {
+        "columns": [
+            ["ID", "INT", "Primary Key, Auto Increment"],
+            ["User _ID", "INT", "Foreign Key references User(ID)"],
+            ["Task", "VARCHAR(255)", "Not Null"],
+            ["Status", "VARCHAR(50)", "Default: Pending"],
+        ],
+        "description": "Stores to-do tasks for each user."
+    },
+    "Message": {
+        "columns": [
+            ["ID", "INT", "Primary Key, Auto Increment"],
+            ["User _ID", "INT", "Foreign Key references User(ID)"],
+            ["Message_Content", "TEXT", "Not Null"],
+            ["Date_Sent", "DATETIME", "Default: Current Timestamp"],
+        ],
+        "description": "Stores messages sent by users."
+    }
+}
+
+# Add content for each table
+for table_name, table_info in tables.items():
+    # Table Title
+    pdf.set_font("Arial", size=12, style='B')
+    pdf.cell(200, 10, txt=f"Table: {table_name}", ln=True)
+    
+    # Table Description
+    pdf.set_font("Arial", size=10)
+    pdf.multi_cell(0, 10, txt=f"Description: {table_info['description']}")
+    
+    # Table Columns
+    pdf.set_font("Arial", size=10, style='B')
+    pdf.cell(60, 10, txt="Column", border=1, align='C')
+    pdf.cell(50, 10, txt="Data Type", border=1, align='C')
+    pdf.cell(80, 10, txt="Constraints", border=1, ln=True, align='C')
+    
+    pdf.set_font("Arial", size=10)
+    for column in table_info['columns']:
+        pdf.cell(60, 10, txt=column[0], border=1, align='C')
+        pdf.cell(50, 10, txt=column[1], border=1, align='C')
+        pdf.cell(80, 10, txt=column[2], border=1, ln=True, align='C')
+    
+    # Add spacing between tables
+    pdf.ln(10)
+
+# Save the PDF
+file_path = "/mnt/data/diary_app_tables.pdf"
+pdf.output(file_path)
+
+file_path

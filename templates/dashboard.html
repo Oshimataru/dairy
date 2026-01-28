@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard</h2>
+<form action="/alter_user" method="POST">
+    <input type="hidden" name="user_id" value="1"> <!-- Use actual user ID here -->
+    <input type="text" name="new_username" placeholder="New Username" required>
+    <input type="password" name="new_password" placeholder="New Password" required>
+    <button type="submit">Alter User</button>
+</form>
+
+<form action="/get_message" method="POST">
+    <h3>Send Message</h3>
+    <textarea name="message" placeholder="Your message..." required></textarea>
+    <button type="submit">Send</button>
+</form>
+
+<h3>User Messages</h3>
+<!-- Display messages here -->
+{% endblock %}
